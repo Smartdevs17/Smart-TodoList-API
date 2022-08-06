@@ -1,0 +1,25 @@
+ const User = require("../../models/User");
+
+ const CreateUser = (data) => {
+    const newUser = new User(data);
+    return newUser.save().then(() => {
+        return newUser.generateAuthToken();
+    }).then((token) => {
+        return  {success: true,message: newUser,token};
+    }).catch((err) => {
+        return {success: false,message: err}
+    })
+ };
+
+ const FetchUser = (data) => {
+    return User.findByToken(data).then((user) => {
+        if(!user){
+            return {success: false,message: "No user found with that token"}
+        }else{
+            return {success: true,message: user}
+        }
+    });
+ }
+
+
+ module.exports = {CreateUser,FetchUser};

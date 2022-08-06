@@ -7,7 +7,7 @@ if(env === "development"){
     process.env.PORT = 3000;
     process.env.MONGO_URL = "mongodb://localhost:27017/smartTodoDBTest"
 };
-
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -15,7 +15,7 @@ const morgan = require("morgan");
 const connection = require("./db/config-db");
 
 const todoRoute = require("./routes/todo/todo");
-
+const userRoute = require("./routes/user/user");
 
 
 app.use(express.json());
@@ -23,7 +23,7 @@ app.use(cors());
 app.use(morgan("common"));
 
 app.use("/api/todos",todoRoute);
-
+app.use("/api/users",userRoute);
 
 
 

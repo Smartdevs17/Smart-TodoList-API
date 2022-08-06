@@ -4,22 +4,10 @@ const {ObjectId} = require("mongodb");
 const app = require("../app");
 
 const Todo = require("../models/Todo");
+const {populateTodo,populateUser,users,tasks} = require("./data/data");
 
-const tasks = [
-    {
-        _id: new ObjectId(),
-        task: "Clean the house",
-    },
-    {
-        _id: new ObjectId(),
-        task: "Go to buy kerosine"
-    }
-]
-beforeEach((done) => {
-    Todo.deleteMany({}).then(() => {
-        return Todo.insertMany(tasks).then(() => done())
-    })
-})
+beforeEach(populateTodo);
+beforeEach(populateUser);
 
 describe("POST /api/todos/add_task",() => {
     it("should create a new task",(done) => {
