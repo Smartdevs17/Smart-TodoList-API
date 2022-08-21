@@ -8,7 +8,7 @@
         return  {success: true,message: newUser,token};
     }).catch((err) => {
         return {success: false,message: err}
-    })
+    });
  };
 
  const FetchUser = (data) => {
@@ -19,7 +19,24 @@
             return {success: true,message: user}
         }
     });
+ };
+
+ const ValidateUser = (data) => {
+    return User.findByCredentials(data.email,data.password).then((user) => {
+        if(user){
+            return user.generateAuthToken().then((token) => {
+                return {success: true, message: user,token}
+            });
+        }else{
+            return {success: false,message: "No record found for that user"}
+        } 
+    });
+ };
+
+ const RemoveUser = (token,id) => {
+    return User.findByIdAndUpdate(id,{$pull: {tokens: {token}}}).then((user) => {
+        return {success: true , message: user}
+    })
  }
 
-
- module.exports = {CreateUser,FetchUser};
+ module.exports = {CreateUser,FetchUser,ValidateUser,RemoveUser};

@@ -1,5 +1,5 @@
-const {CreateUser,FetchUser} = require("../../services/user/user");
-const _ = require("lodash")
+const {CreateUser,ValidateUser} = require("../../services/user/user");
+const _ = require("lodash");
 
 const RegisterUser = async(req,res) => {
     try {
@@ -39,10 +39,47 @@ const RegisterUser = async(req,res) => {
 
 const GetUser = async(req,res) => {
     try {
-        res.status(200).json(req.user);
+        res.status(200).json({
+            success: true,
+            message: "user found",
+            data: req.user
+        })
     } catch (error) {
-        res.status(401).json(error.message)
+        res.status(500).json({
+            error: error
+        })
+    }
+};
+
+const LoginUser = async(req,res) => {
+    try {
+        const body = _.pick(req.body,["email","password"]);
+        const response = await ValidateUser(body)
+        const {success, message} = response;
+        if(success){
+            res.header("x-auth",message.tokens[0].token).status(200).json({
+                success,message: "User found ",
+                data: message
+            });
+        }
+
+    } catch (error) {
+        res.status(404).json({success: false,message: "No record found for that user"})
+    }
+}
+const DeleteToken = async(req,res) => {
+    try {
+        req.user.removeToken(req.token).then(() => {
+            res.status(200).json({
+                success: true,
+                message: "User successfully deleted"
+            });
+        })
+    } catch (error) {
+        res.status(500).json({
+            error: error
+        })
     }
 }
 
-module.exports = {RegisterUser,GetUser}
+module.exports = {RegisterUser,GetUser,LoginUser,DeleteToken}

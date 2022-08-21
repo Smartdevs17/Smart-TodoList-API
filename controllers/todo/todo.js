@@ -7,9 +7,9 @@ const CreateTodo = async(req,res) => {
     try {
         const task = req.body.task;
         if(task){
-            const values = req.body;
+            let values = req.body;
+             values.userId = req.user
             const newTask = await AddTodo(values);
-            // console.log(newTask);
             const {success, message} = newTask;
             if(success){
                 res.status(201).json({
@@ -39,7 +39,7 @@ const CreateTodo = async(req,res) => {
 // Get all the todos
 const GetAllTodo = async(req,res) => {
     try {
-        const tasks = await FetchAllTodo();
+        const tasks = await FetchAllTodo(req.user);
         const {success, message} = tasks;
         if(success){
             res.status(200).json({
@@ -65,7 +65,7 @@ const GetATodo = async(req,res)=> {
     try {
         const id = req.params.id;
         if(ObjectId.isValid(id)){
-            const todo = await FetchATodo(id);
+            const todo = await FetchATodo(id,req.user._id);
             const {success, message} = todo;
             if(success){
                 res.status(200).json({
@@ -74,7 +74,7 @@ const GetATodo = async(req,res)=> {
             }else{
                 res.status(404).json({
                     success,message,
-                    error: "There seems to be an error while fetching todo from DB"
+                    error: "No task found with that id"
                 })
             }  
         }else{  
@@ -104,7 +104,7 @@ const UpdateTodo = async(req,res) => {
                 values.completed = false;
                 values.completedAt = null;
             }
-            const todo = await PatchTodo(id,values);
+            const todo = await PatchTodo(id,req.user._id,values);
             const {success, message} = todo;
             if(success){
                 res.status(200).json({
@@ -137,7 +137,7 @@ const DeleteTodo = async(req,res)=> {
     try {
         const id = req.params.id;
         if(ObjectId.isValid(id)){
-            const todo = await RemoveTodo(id);
+            const todo = await RemoveTodo(id,req.user._id);
             const {success, message} = todo;
             if(success){
                 res.status(200).json({

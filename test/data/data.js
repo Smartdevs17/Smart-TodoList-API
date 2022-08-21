@@ -3,20 +3,25 @@ const Todo = require("../../models/Todo");
 const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
 
-const tasks = [
-    {
-        _id: new ObjectId(),
-        task: "Clean the house",
-    },
-    {
-        _id: new ObjectId(),
-        task: "Go to buy kerosine"
-    }
-];
+
 
 const userOneId = new ObjectId();
 const userTwoId = new ObjectId();
 const userThreeId = new ObjectId();
+
+
+const tasks = [
+    {
+        _id: new ObjectId(),
+        task: "Clean the house",
+        userId: userOneId
+    },
+    {
+        _id: new ObjectId(),
+        task: "Go to buy kerosine",
+        userId: userTwoId
+    }
+];
 
 const users = [
     {
