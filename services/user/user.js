@@ -18,7 +18,9 @@
         }else{
             return {success: true,message: user}
         }
-    });
+    }).catch((err) => {
+        return {success: false, message: err}
+    })
  };
 
  const ValidateUser = (data) => {
@@ -30,13 +32,17 @@
         }else{
             return {success: false,message: "No record found for that user"}
         } 
+    }).catch((err) => {
+        return {success: false, message: err}
     });
  };
 
  const RemoveUser = (token,id) => {
     return User.findByIdAndUpdate(id,{$pull: {tokens: {token}}}).then((user) => {
         return {success: true , message: user}
-    })
+    }).catch((err) => {
+        return {success: false, message: err}
+    });
  }
 
  module.exports = {CreateUser,FetchUser,ValidateUser,RemoveUser};
